@@ -16,6 +16,6 @@ public partial class WorkoutMetric
     public DateTime? RecordedAt { get; set; }
 
     public virtual Unit Unit { get; set; } = null!;
-
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual Workout Workout { get; set; } = null!;
 }

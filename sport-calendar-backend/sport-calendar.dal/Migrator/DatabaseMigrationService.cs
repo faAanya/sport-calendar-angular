@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using sport_calendar.dal.Context;
-using sport_calendar.il.Migrator;
 
 namespace sport_calendar.dal.Migrator;
 

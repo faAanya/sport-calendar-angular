@@ -1,4 +1,4 @@
-namespace sport_calendar.il.Migrator;
+namespace sport_calendar.dal.Migrator;
 
 public interface IDatabaseMigrationService
 {

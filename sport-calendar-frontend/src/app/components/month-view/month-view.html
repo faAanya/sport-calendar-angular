@@ -1,19 +1,62 @@
-<div class="month-view-container">
+<div class="layout-wrapper">
+  
+  <div class="month-view-container">
+    <h2>Calendar</h2>
+    
     <div class="day">
-        @for (day of days; track day) {
+      @for (d of days; track d) {
         
-            <div class="day-card" (click)="selectDate(day)">
-                <h3 style="color: rgb(248, 72, 72)">
-                    {{ day | date : "EEEE, dd" }}
-                    <button class="add-event-btn" (click)="addEvent(day); $event.stopPropagation()">+</button>
-                </h3>
-            </div>
-        }
-    </div> 
-<!-- Events section -->
-@if(selectedDate) {
-    <h3>Events for {{ selectedDate | date : "EEEE, MMMM dd, yyyy" }}</h3>
+        <div 
+          [class.selected-card]="selectedDate?.getTime() === d.getTime()"
+          (click)="selectDate(d)">
+          
+          <h3>{{ d | date:'d MMM' }}</h3>
+          
+          <div class="chips-container">
+            @for (workout of exercises[d.toISOString().split('T')[0]]; track workout.id) {
+              <app-exercise [name]="workout.activity.name"></app-exercise>
+            }
+          </div>
 
-    <app-exercise-list [exercieses]="exercises[selectedDate!.toISOString().split('T')[0]] || []"
-        (removeExersises)="removeEvent(selectedDate!, $event)"></app-exercise-list>
-}
+          <div class="button-container">
+            <button class="add-event-btn" (click)="addEvent(d); $event.stopPropagation()">+</button>
+          </div>
+
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="details-sidebar">
+    @if (selectedDate) {
+      <h2>Details for {{ selectedDate | date:'longDate' }}</h2>
+      
+      @if (selectedDateWorkouts.length === 0) {
+        <p class="empty-state">No workouts scheduled for this day.</p>
+      } @else {
+        <div class="workout-cards">
+          @for (workout of selectedDateWorkouts; track workout.id) {
+            <div class="detail-card">
+              <div class="card-header">
+                <h3>{{ workout.activity.name }}</h3>
+                <span class="status-badge">{{ workout.status.statusLabel }}</span>
+              </div>
+              <hr>
+              <div class="goals-container">
+                <h4>Goals</h4>
+                @for (goal of workout.workoutGoals; track goal.id) {
+                  <p>Target: <strong>{{ goal.targetValue }} {{ goal.unit.unitCode }}</strong></p>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    } @else {
+      <div class="empty-state">
+        <p>Select a date to see details.</p>
+      </div>
+    }
+  </div>
+
+</div>

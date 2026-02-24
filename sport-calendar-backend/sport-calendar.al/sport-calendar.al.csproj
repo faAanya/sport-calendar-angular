@@ -7,8 +7,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\sport-calendar.il\sport-calendar.il.csproj" />
-  </ItemGroup>
-
 </Project>

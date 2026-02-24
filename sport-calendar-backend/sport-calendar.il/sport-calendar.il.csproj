@@ -7,4 +7,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\sport-calendar.dal\sport-calendar.dal.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MigratorService\" />
+  </ItemGroup>
+
 </Project>

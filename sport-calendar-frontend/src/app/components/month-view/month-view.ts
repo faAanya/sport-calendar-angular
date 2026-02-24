@@ -2,10 +2,11 @@ import { Component, effect, input, InputSignal, OnInit } from '@angular/core';
 import { Exercise } from '../../services/exercise';
 import { DatePipe } from '@angular/common';
 import { ExerciseList } from '../exercise-list/exercise-list';
+import { Workout } from '../../exercise/exercise';
 
 @Component({
   selector: 'app-month-view',
-  imports: [DatePipe,ExerciseList],
+  imports: [DatePipe,ExerciseList, Workout],
   templateUrl: './month-view.html',
   styleUrl: './month-view.css',
 })
@@ -13,8 +14,9 @@ export class MonthView implements OnInit {
   
   date = input<Date>(new Date())
   days: Date[] = []
-  exercises: {[key: string]: string[]} = {}
+  exercises: { [key: string]: any[] } = {};
   selectedDate: Date | null = null
+  selectedDateWorkouts: any[] = [];
 
     constructor(private exerciseService: Exercise) {
       effect(()=>{
@@ -36,8 +38,22 @@ throw new Error('Method not implemented.');
     this.loadExercises();
   }
 
-  selectDate(day: Date){
+  selectDate(day: Date) {
     this.selectedDate = day;
+    
+    const year = day.getFullYear();
+    const month = String(day.getMonth() + 1).padStart(2, '0');
+    const dayStr = String(day.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${dayStr}`;
+
+    // Fetch details for this specific day
+    this.exerciseService.getExercisesByDate(formattedDate).subscribe({
+      next: (data) => {
+        this.selectedDateWorkouts = data;
+        console.log('Workouts for selected date:', this.selectedDateWorkouts);
+      },
+      error: (err) => console.error('Failed to fetch day details', err)
+    });
   }
 
   getDaysInMonth(): Date[] {
@@ -53,16 +69,24 @@ throw new Error('Method not implemented.');
     return days;
   }
 
-  loadExercises() {
-    this.days.forEach((day) => {
-            const dateString = day.toISOString().split('T')[0];
-            this.exercises[dateString] = this.exerciseService.getExercises(dateString);
-        });
+ loadExercises() {
+    this.exerciseService.getExercises().subscribe(data => {
+      const grouped: {[key: string]: any[]} = {};
+      
+      data.forEach(item => {
+        
+        const dateKey = item.workoutDate.split('T')[0]; 
+        if (!grouped[dateKey]) grouped[dateKey] = [];
+        grouped[dateKey].push(item);
+      });
+      
+      this.exercises = grouped;
+    });
   }
 
-  checkEvent(day: Date) {
-        const dateString = day.toISOString().split('T')[0];
-        const arr = this.exerciseService.getExercises(dateString);
-        return arr.length;
-    }
+  // Clean up the unused checkEvent method or update it
+  hasEvents(day: Date): boolean {
+    const dateString = day.toISOString().split('T')[0];
+    return !!this.exercises[dateString]?.length;
+  }
 }

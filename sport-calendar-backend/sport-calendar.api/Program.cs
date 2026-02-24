@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
-using sport_calendar.api.InfrastructureServices;
+using sport_calendar.api.Extensions.InfrastructureServices;
+using sport_calendar.api.Extensions.Policies;
 using sport_calendar.dal.Context;
-using sport_calendar.il.Migrator;
+using sport_calendar.dal.Migrator;
 
 //builder
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ExerciseDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbContext")));
+builder.Services.AddCorsPolicy();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddControllers();
 
@@ -17,13 +19,7 @@ using (var scope = app.Services.CreateScope())
     var migrationService = scope.ServiceProvider.GetRequiredService<IDatabaseMigrationService>();
     await migrationService.MigrateAsync();
 }
-
-//middlewares
-app.MapGet("/", async (ExerciseDbContext context) =>
-{
-    var statuses = await context.Statuses.ToListAsync();
-    return statuses;
-});
+app.UseCors("CorsPolicy");
 app.MapControllers();
 
 app.Run();
