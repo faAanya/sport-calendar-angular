@@ -1,23 +1,22 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-ARG BUILD_CONFIGURATION=Release
+﻿FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["sport-calendar-backend/sport-calendar-backend.csproj", "sport-calendar-backend/"]
-RUN dotnet restore "sport-calendar-backend/sport-calendar-backend.csproj"
+
+COPY ["sport-calendar.api/sport-calendar.api.csproj", "sport-calendar.api/"]
+COPY ["sport-calendar.dal/sport-calendar.dal.csproj", "sport-calendar.dal/"]
+COPY ["sport-calendar.il/sport-calendar.il.csproj", "sport-calendar.il/"]
+COPY ["sport-calendar.al/sport-calendar.al.csproj", "sport-calendar.al/"]
+
+RUN dotnet restore "sport-calendar.api/sport-calendar.api.csproj"
+
 COPY . .
-WORKDIR "/src/sport-calendar-backend"
-RUN dotnet build "./sport-calendar-backend.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/sport-calendar.api"
+RUN dotnet build "sport-calendar.api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./sport-calendar-backend.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "sport-calendar.api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
+EXPOSE 8080
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "sport-calendar-backend.dll"]
+ENTRYPOINT ["dotnet", "sport-calendar.api.dll"]

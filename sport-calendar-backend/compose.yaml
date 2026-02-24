@@ -1,7 +1,0 @@
-﻿services:
-  sport-calendar-backend:
-    image: sport-calendar-backend
-    build:
-      context: .
-      dockerfile: sport-calendar-backend/Dockerfile
-
