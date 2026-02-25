@@ -15,6 +15,4 @@ public partial class Workout
     public virtual Status? Status { get; set; }
 
     public virtual ICollection<WorkoutGoal> WorkoutGoals { get; set; } = new List<WorkoutGoal>();
-
-    public virtual ICollection<WorkoutMetric> WorkoutMetrics { get; set; } = new List<WorkoutMetric>();
 }

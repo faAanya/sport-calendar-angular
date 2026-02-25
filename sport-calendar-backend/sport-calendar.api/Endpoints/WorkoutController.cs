@@ -31,4 +31,15 @@ public class WorkoutController : ControllerBase
         
         return NoContent(); 
     }
+    
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateWorkout(int id, [FromBody] Workout updatedWorkout, CancellationToken ct)
+    {
+        if (id != updatedWorkout.Id) return BadRequest("ID mismatch");
+
+        _workoutRepo.UpdateItem(updatedWorkout); 
+        await _workoutRepo.SaveChangesAsync(ct);
+        
+        return NoContent();
+    }
 }

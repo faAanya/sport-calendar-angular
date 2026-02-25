@@ -20,8 +20,6 @@ public partial class ExerciseDbContext : DbContext
 
     public virtual DbSet<WorkoutGoal> WorkoutGoals { get; set; }
 
-    public virtual DbSet<WorkoutMetric> WorkoutMetrics { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ActivityType>(entity =>
@@ -92,6 +90,9 @@ public partial class ExerciseDbContext : DbContext
             entity.Property(e => e.TargetValue)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("target_value");
+            entity.Property(e => e.CurrentValue)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("current_value");
             entity.Property(e => e.UnitId).HasColumnName("unit_id");
             entity.Property(e => e.WorkoutId).HasColumnName("workout_id");
 
@@ -104,33 +105,6 @@ public partial class ExerciseDbContext : DbContext
                 .HasForeignKey(d => d.WorkoutId)
                 .HasConstraintName("FK_Goals_Workout");
         });
-
-        modelBuilder.Entity<WorkoutMetric>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__workout___3213E83F752132BD");
-
-            entity.ToTable("workout_metrics");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.MetricValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("metric_value");
-            entity.Property(e => e.RecordedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("recorded_at");
-            entity.Property(e => e.UnitId).HasColumnName("unit_id");
-            entity.Property(e => e.WorkoutId).HasColumnName("workout_id");
-
-            entity.HasOne(d => d.Unit).WithMany(p => p.WorkoutMetrics)
-                .HasForeignKey(d => d.UnitId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Metrics_Unit");
-
-            entity.HasOne(d => d.Workout).WithMany(p => p.WorkoutMetrics)
-                .HasForeignKey(d => d.WorkoutId)
-                .HasConstraintName("FK_Metrics_Workout");
-        });
         
         modelBuilder.Entity<Status>().HasData(
             new Status { Id = 1, StatusLabel = "Planned" },
@@ -141,7 +115,8 @@ public partial class ExerciseDbContext : DbContext
         modelBuilder.Entity<Unit>().HasData(
             new Unit { Id = 1, UnitCode = "steps" },
             new Unit { Id = 2, UnitCode = "km" },
-            new Unit { Id = 3, UnitCode = "min" }
+            new Unit { Id = 3, UnitCode = "min" },
+            new Unit { Id = 4, UnitCode = "reps" }
         );
         
         var today = new DateOnly(2026, 02, 24);
@@ -154,21 +129,18 @@ public partial class ExerciseDbContext : DbContext
         );
         
         modelBuilder.Entity<WorkoutGoal>().HasData(
-            new WorkoutGoal { Id = 1, WorkoutId = 1, UnitId = 1, TargetValue = 10000m }, 
-            new WorkoutGoal { Id = 2, WorkoutId = 1, UnitId = 2, TargetValue = 7.5m },   
-            new WorkoutGoal { Id = 3, WorkoutId = 2, UnitId = 2, TargetValue = 5.0m },
-            new WorkoutGoal { Id = 4, WorkoutId = 3, UnitId = 3, TargetValue = 45m }     
-        );
-        
-        modelBuilder.Entity<WorkoutMetric>().HasData(
-            new WorkoutMetric { Id = 1, WorkoutId = 1, UnitId = 1, MetricValue = 2000m }, 
-            new WorkoutMetric { Id = 2, WorkoutId = 1, UnitId = 2, MetricValue = 1.4m }   
+            new WorkoutGoal { Id = 1, WorkoutId = 1, UnitId = 1, TargetValue = 10000m, CurrentValue = 7500m}, 
+            new WorkoutGoal { Id = 2, WorkoutId = 1, UnitId = 2, TargetValue = 7.5m,  CurrentValue = 7.2m },   
+            new WorkoutGoal { Id = 3, WorkoutId = 2, UnitId = 2, TargetValue = 5.0m, CurrentValue = 0m},
+            new WorkoutGoal { Id = 4, WorkoutId = 3, UnitId = 3, TargetValue = 45m,  CurrentValue = 12m }     
         );
         
         modelBuilder.Entity<ActivityType>().HasData(
             new ActivityType { Id = 1, Name = "Walking" },
             new ActivityType { Id = 2, Name = "Running" },
-            new ActivityType { Id = 3, Name = "Cycling" }
+            new ActivityType { Id = 3, Name = "Cycling" },
+            new ActivityType { Id = 4, Name = "Push-ups" },
+            new ActivityType { Id = 5, Name = "Swimming" }
         );
 
         OnModelCreatingPartial(modelBuilder);

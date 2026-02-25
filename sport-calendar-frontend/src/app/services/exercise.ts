@@ -24,6 +24,9 @@ export class Exercise {
   createWorkout(newWorkout: WorkoutModel): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/workout`, newWorkout);
   }
+  updateWorkout(id: number, updatedWorkout: any): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/workout/${id}`, updatedWorkout);
+  }
   deleteWorkout(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/workout/${id}`);
   }

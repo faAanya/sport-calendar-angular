@@ -11,6 +11,7 @@ import { WorkoutModel } from '../../models/workout.model';
   styleUrl: './month-view.css',
 })
 export class MonthView implements OnInit {
+
   date = input<Date>(new Date())
   days: Date[] = []
   exercises: { [key: string]: any[] } = {};
@@ -57,11 +58,6 @@ export class MonthView implements OnInit {
     return days;
   }
 
-  hasEvents(day: Date): boolean {
-    const dateString = day.toISOString().split('T')[0];
-    return !!this.exercises[dateString]?.length;
-  }
-
   isToday(date: Date): boolean {
   const today = new Date();
   return date.getDate() === today.getDate() &&
@@ -69,20 +65,7 @@ export class MonthView implements OnInit {
          date.getFullYear() === today.getFullYear();
   }
 
-  openAddModal(date?: Date) {
-    if (date) {
-      this.selectedDate = date; 
-    }
-    if (this.selectedDate) {
-      this.isAddModalOpen = true;
-    }
-  }
-
-  closeAddModal() {
-    this.isAddModalOpen = false;
-  }
-
-  onWorkoutSaved(workoutData: any) {
+  createWorkout(workoutData: any) {
     const dateObj = workoutData.date as Date;
     const formattedDate = new Date(dateObj.getTime() - (dateObj.getTimezoneOffset() * 60000))
                             .toISOString().split('T')[0];
@@ -147,8 +130,82 @@ export class MonthView implements OnInit {
     });
   }
 
+  openAddModal(date?: Date) {
+    if (date) {
+      this.selectedDate = date; 
+    }
+    if (this.selectedDate) {
+      this.isAddModalOpen = true;
+    }
+  }
+  openEditModal(workout: any) {
+    const goal = workout.workoutGoals[0];
+    const currentVal = goal.currentValue || 0;
+    
+    const input = window.prompt(
+      `Update progress for ${workout.activity.name} (Target: ${goal.targetValue} ${goal.unit.unitCode}):`, 
+      currentVal.toString()
+    );
+    
+    if (input !== null && input.trim() !== "") {
+      const newCurrentValue = parseFloat(input);
+      
+      if (isNaN(newCurrentValue) || newCurrentValue < 0 || newCurrentValue > goal.targetValue) {
+        alert("Please enter a valid number between 0 and the target value.");
+        return;
+      }
+      const progressRatio = newCurrentValue / goal.targetValue;
+      let newStatusId = 1; 
+
+      if (progressRatio >= 1) {
+        newStatusId = 3; 
+      } else if (progressRatio > 0) {
+        newStatusId = 2; 
+      } else {
+        newStatusId = 1;
+      }
+
+      const updatedWorkout = {
+        ...workout,
+        statusId: newStatusId, 
+        status: null,  
+        workoutDate: workout.workoutDate.split('T')[0], 
+        workoutGoals: [
+          {
+            ...goal,
+            currentValue: newCurrentValue
+          }
+        ]
+      };
+      this.exerciseService.updateWorkout(workout.id, updatedWorkout).subscribe({
+        next: () => {
+          const dateKey = this.formatDate(this.selectedDate);
+          this.exerciseService.getExercisesByDate(dateKey).subscribe(freshData => {
+            this.selectedDateWorkouts = [...freshData];
+            this.exercises = { ...this.exercises, [dateKey]: freshData };
+            this.cdr.detectChanges();
+          });
+        },
+        error: (err) => {
+          console.error("Failed to update", err);
+          alert("Failed to update progress. Check console for details.");
+        }
+      });
+    }
+  }
+
+  closeAddModal() {
+    this.isAddModalOpen = false;
+  }
+      
    formatDate(date: Date): string {
     return new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
       .toISOString().split('T')[0];
+  }
+
+  getProgressPercentage(current: number | undefined, target: number): number {
+    if (!current || target === 0) return 0;
+    const percentage = (current / target) * 100;
+    return Math.min(Math.round(percentage), 100); 
   }
 }

@@ -3,6 +3,7 @@ export interface WorkoutGoal {
   workoutId?: number; 
   unitId: number;
   targetValue: number;
+  currentValue?: number;
 }
 
 export interface WorkoutModel {

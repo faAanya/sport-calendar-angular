@@ -3,7 +3,6 @@ using sport_calendar.il.Repositories.ActivityType;
 using sport_calendar.il.Repositories.Unit;
 using sport_calendar.il.Repositories.Workout;
 using sport_calendar.il.Repositories.WorkoutGoal;
-using sport_calendar.il.Repositories.WorkoutMetric;
 
 namespace sport_calendar.api.Extensions.InfrastructureServices;
 
@@ -14,7 +13,6 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<IDatabaseMigrationService, DatabaseMigrationService>();
         services.AddScoped<IWorkoutRepository, WorkoutRepository>();
         services.AddScoped<IWorkoutGoalRepository, WorkoutGoalRepository>();
-        services.AddScoped<IWorkoutMetricRepository, WorkoutMetricRepository>();
         services.AddScoped<IUnitRepository, UnitRepository>();
         services.AddScoped<IActivityTypeRepository, ActivityTypeRepository>();
 

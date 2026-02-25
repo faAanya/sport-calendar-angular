@@ -19,7 +19,6 @@ public class WorkoutRepository : Repository<dal.Entities.Workout>, IWorkoutRepos
             .Include(w => w.Activity)
             .Include(w => w.Status)
             .Include(w => w.WorkoutGoals).ThenInclude(g => g.Unit)
-            .Include(w => w.WorkoutMetrics)
             .Where(w=>w.WorkoutDate==date)
             .ToListAsync(cancellationToken);
     }
