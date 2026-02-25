@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using sport_calendar.dal.Entities;
 using sport_calendar.il.Repositories.Workout;
@@ -6,7 +7,7 @@ namespace sport_calendar.api.Endpoints;
 
 [ApiController]
 [Route("api/[controller]")]
-public class WorkoutController
+public class WorkoutController : ControllerBase
 {
     private readonly IWorkoutRepository _workoutRepo;
 
@@ -20,10 +21,14 @@ public class WorkoutController
         _workoutRepo.AddItem(newWorkout);
         await _workoutRepo.SaveChangesAsync(ct);
     }
-    [HttpDelete]
-    public async Task DeleteWorkout([FromQuery] Workout deleteWorkout, CancellationToken ct)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteWorkout(int id, CancellationToken ct)
     {
-        _workoutRepo.DeleteItem(deleteWorkout);
+        var workoutToDelete = new Workout { Id = id };
+        
+        _workoutRepo.DeleteItem(workoutToDelete);
         await _workoutRepo.SaveChangesAsync(ct);
+        
+        return NoContent(); 
     }
 }
