@@ -3,6 +3,7 @@ using sport_calendar.dal.Repositories;
 
 namespace sport_calendar.il.Repositories.WorkoutGoal;
 
+public interface IWorkoutGoalRepository : IRepository<dal.Entities.WorkoutGoal> { }
 public class WorkoutGoalRepository: Repository<dal.Entities.WorkoutGoal>, IWorkoutGoalRepository
 {
     public WorkoutGoalRepository(ExerciseDbContext dbContext) : base(dbContext)

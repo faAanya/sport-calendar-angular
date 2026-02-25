@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace sport_calendar.dal.Entities;
+﻿namespace sport_calendar.dal.Entities;
 
 public partial class Workout
 {
@@ -12,10 +9,10 @@ public partial class Workout
     public int ActivityId { get; set; }
 
     public int StatusId { get; set; }
+    
+    public virtual ActivityType? Activity { get; set; }
 
-    public virtual ActivityType Activity { get; set; } = null!;
-
-    public virtual Status Status { get; set; } = null!;
+    public virtual Status? Status { get; set; }
 
     public virtual ICollection<WorkoutGoal> WorkoutGoals { get; set; } = new List<WorkoutGoal>();
 

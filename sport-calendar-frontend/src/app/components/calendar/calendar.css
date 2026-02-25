@@ -1,10 +1,12 @@
 .calendar-container {
-  max-width: 900px;
+  max-width: 1400px; /* Increased width to fit the grid and sidebar */
+  width: 95%;
   margin: 40px auto;
   padding: 30px;
   background: #ffffff;
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 .header {
@@ -12,29 +14,31 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
+  padding: 0 10px;
 }
 
 .header h2 {
-  font-size: 26px;
-  font-weight: 600;
-  color: #333;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
   letter-spacing: 0.5px;
 }
 
 .header button {
-  padding: 8px 18px;
+  padding: 10px 20px;
   border: none;
   border-radius: 12px;
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
 }
 
 .header button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 18px rgba(102, 126, 234, 0.4);
 }
 
 .header button:active {

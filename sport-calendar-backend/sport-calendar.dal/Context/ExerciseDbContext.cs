@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using sport_calendar.dal.Entities;
 
 namespace sport_calendar.dal.Context;

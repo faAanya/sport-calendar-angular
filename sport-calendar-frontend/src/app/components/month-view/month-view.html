@@ -2,12 +2,12 @@
   
   <div class="month-view-container">
     <h2>Calendar</h2>
-    
-    <div class="day">
+   <div class="day">
       @for (d of days; track d) {
         
         <div 
           [class.selected-card]="selectedDate?.getTime() === d.getTime()"
+          [class.today-card]="isToday(d)"
           (click)="selectDate(d)">
           
           <h3>{{ d | date:'d MMM' }}</h3>
@@ -16,11 +16,7 @@
             @for (workout of exercises[d.toISOString().split('T')[0]]; track workout.id) {
               <app-exercise [name]="workout.activity.name"></app-exercise>
             }
-          </div>
-
-          <div class="button-container">
-            <button class="add-event-btn" (click)="addEvent(d); $event.stopPropagation()">+</button>
-          </div>
+          </div> 
 
         </div>
       }
@@ -31,17 +27,35 @@
     @if (selectedDate) {
       <h2>Details for {{ selectedDate | date:'longDate' }}</h2>
       
+     <button class="create-workout-btn" (click)="openAddModal(selectedDate)">
+      + Add New Workout
+    </button>
+      
       @if (selectedDateWorkouts.length === 0) {
         <p class="empty-state">No workouts scheduled for this day.</p>
       } @else {
         <div class="workout-cards">
           @for (workout of selectedDateWorkouts; track workout.id) {
             <div class="detail-card">
+              
               <div class="card-header">
                 <h3>{{ workout.activity.name }}</h3>
-                <span class="status-badge">{{ workout.status.statusLabel }}</span>
+                
+                <div class="header-actions">
+                  <span class="status-badge">{{ workout.status.statusLabel }}</span>
+                  
+                  <button class="delete-btn" (click)="removeEvent(selectedDate, workout.id)" aria-label="Delete workout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 6h18"></path>
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </div>
+
               </div>
               <hr>
+              
               <div class="goals-container">
                 <h4>Goals</h4>
                 @for (goal of workout.workoutGoals; track goal.id) {
@@ -60,3 +74,10 @@
   </div>
 
 </div>
+@if (isAddModalOpen) {
+  <app-add-workout-modal
+    [selectedDate]="selectedDate"
+    (close)="closeAddModal()"
+    (save)="onWorkoutSaved($event)">
+  </app-add-workout-modal>
+}

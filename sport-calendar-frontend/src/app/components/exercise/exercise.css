@@ -1,0 +1,24 @@
+.workout-chip {
+  background: #e0e7ff;
+  border-left: 3px solid #667eea;
+  padding: 4px 8px;
+  margin: 0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bullet { 
+  display: none; /* Removed the bullet in favor of the border-left design */
+}
+
+.label { 
+  color: #3730a3; 
+  font-weight: 600; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}

@@ -1,31 +1,27 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '../environment/environment';
 import { Observable } from 'rxjs';
+import { WorkoutModel } from '../models/workout.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Exercise {
-  private storageKey = 'exercises';
   exercises: {[key: string]: string[]} = {}
   private readonly baseUrl = environment.apiUrl;
+  http = inject(HttpClient);
+  
+  constructor() {}
 
-  constructor(private http: HttpClient) {
-    this.loadEvents();
-  }
-  loadEvents() {
-   const storedEvents = localStorage.getItem(this.storageKey);
-        if (storedEvents) {
-            this.exercises = JSON.parse(storedEvents);
-        }
-  }
-  getExercises(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/calendar`);
-  }
   getExercisesByDate(dateString: string): Observable<any[]> {
-  const params = new HttpParams().set('date', dateString);
-  return this.http.get<any[]>(`${this.baseUrl}/calendar`, { params });
-}
-
+    const params = new HttpParams().set('date', dateString);
+    return this.http.get<any[]>(`${this.baseUrl}/calendar/date`, { params });
+  }
+  getDashboardDetails(): Observable<{units: any[], activityTypes: any[]}> {
+    return this.http.get<{units: any[], activityTypes: any[]}>(`${this.baseUrl}/calendar/dashboard`);
+  }
+  createWorkout(newWorkout: WorkoutModel): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/workout`, newWorkout);
+  }
 }

@@ -1,41 +1,33 @@
-import { Component, effect, input, InputSignal, OnInit } from '@angular/core';
+import { Component, effect, inject, input, InputSignal, OnInit } from '@angular/core';
 import { Exercise } from '../../services/exercise';
 import { DatePipe } from '@angular/common';
-import { ExerciseList } from '../exercise-list/exercise-list';
-import { Workout } from '../../exercise/exercise';
+import { Workout } from '../exercise/exercise';
+import { AddWorkoutModal } from '../modals/add-workout-modal/add-workout-modal';
+import { WorkoutModel } from '../../models/workout.model';
 
 @Component({
   selector: 'app-month-view',
-  imports: [DatePipe,ExerciseList, Workout],
+  imports: [DatePipe, Workout, AddWorkoutModal],
   templateUrl: './month-view.html',
   styleUrl: './month-view.css',
 })
 export class MonthView implements OnInit {
-  
   date = input<Date>(new Date())
   days: Date[] = []
   exercises: { [key: string]: any[] } = {};
-  selectedDate: Date | null = null
+  selectedDate = new Date();
   selectedDateWorkouts: any[] = [];
-
-    constructor(private exerciseService: Exercise) {
+  isAddModalOpen = false;
+  
+  private exerciseService = inject(Exercise);
+    constructor() {
       effect(()=>{
         this.days = this.getDaysInMonth()
-        this.loadExercises();
       })
   }
 
-removeEvent(date: Date, exercise: string) {
-throw new Error('Method not implemented.');
-}
-
-addEvent(date: Date) {
-throw new Error('Method not implemented.');
-}
-
   ngOnInit(): void {
     this.days = this.getDaysInMonth()
-    this.loadExercises();
   }
 
   selectDate(day: Date) {
@@ -46,7 +38,6 @@ throw new Error('Method not implemented.');
     const dayStr = String(day.getDate()).padStart(2, '0');
     const formattedDate = `${year}-${month}-${dayStr}`;
 
-    // Fetch details for this specific day
     this.exerciseService.getExercisesByDate(formattedDate).subscribe({
       next: (data) => {
         this.selectedDateWorkouts = data;
@@ -69,24 +60,57 @@ throw new Error('Method not implemented.');
     return days;
   }
 
- loadExercises() {
-    this.exerciseService.getExercises().subscribe(data => {
-      const grouped: {[key: string]: any[]} = {};
-      
-      data.forEach(item => {
-        
-        const dateKey = item.workoutDate.split('T')[0]; 
-        if (!grouped[dateKey]) grouped[dateKey] = [];
-        grouped[dateKey].push(item);
-      });
-      
-      this.exercises = grouped;
-    });
-  }
-
-  // Clean up the unused checkEvent method or update it
   hasEvents(day: Date): boolean {
     const dateString = day.toISOString().split('T')[0];
     return !!this.exercises[dateString]?.length;
   }
+
+  isToday(date: Date): boolean {
+  const today = new Date();
+  return date.getDate() === today.getDate() &&
+         date.getMonth() === today.getMonth() &&
+         date.getFullYear() === today.getFullYear();
+  }
+
+  openAddModal(date?: Date) {
+    if (date) {
+      this.selectedDate = date; 
+    }
+    if (this.selectedDate) {
+      this.isAddModalOpen = true;
+    }
+  }
+
+  closeAddModal() {
+    this.isAddModalOpen = false;
+  }
+
+  onWorkoutSaved(workoutData: any) {
+    const dateObj = workoutData.date as Date;
+    const formattedDate = new Date(dateObj.getTime() - (dateObj.getTimezoneOffset() * 60000))
+                            .toISOString().split('T')[0];
+
+    const newWorkout: WorkoutModel = {
+      workoutDate: formattedDate,
+      activityId: Number(workoutData.activityId),
+      statusId: 1, 
+      workoutGoals: [
+        {
+          unitId: Number(workoutData.unitId),
+          targetValue: Number(workoutData.targetValue)
+        }
+      ]
+    };
+
+    this.exerciseService.createWorkout(newWorkout).subscribe({
+      next: () => {
+        this.closeAddModal();
+        // TODO: Reload calendar data to reflect the new addition
+      },
+      error: (err) => console.error('Failed to create workout:', err)
+    });
+  }
+  removeEvent(arg0: Date,arg1: any) {
+    throw new Error('Method not implemented.');
+  } 
 }

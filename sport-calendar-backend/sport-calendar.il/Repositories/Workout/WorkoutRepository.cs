@@ -4,11 +4,15 @@ using sport_calendar.dal.Repositories;
 
 namespace sport_calendar.il.Repositories.Workout;
 
+public interface IWorkoutRepository : IRepository<dal.Entities.Workout> 
+{
+    Task<IEnumerable<dal.Entities.Workout>> GetFullWorkoutsByDateAsync(DateOnly date, CancellationToken cancellationToken);
+}
 public class WorkoutRepository : Repository<dal.Entities.Workout>, IWorkoutRepository
 {
     public WorkoutRepository(ExerciseDbContext dbContext) : base(dbContext) { }
 
-    public async Task<IEnumerable<dal.Entities.Workout>> GetFullWorkoutsByDateAsync(DateOnly date)
+    public async Task<IEnumerable<dal.Entities.Workout>> GetFullWorkoutsByDateAsync(DateOnly date, CancellationToken cancellationToken)
     {
         return await _dbContext.Workouts
             .AsNoTracking()
@@ -17,6 +21,6 @@ public class WorkoutRepository : Repository<dal.Entities.Workout>, IWorkoutRepos
             .Include(w => w.WorkoutGoals).ThenInclude(g => g.Unit)
             .Include(w => w.WorkoutMetrics)
             .Where(w=>w.WorkoutDate==date)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 }

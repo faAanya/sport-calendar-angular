@@ -1,35 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
 using sport_calendar.dal.Entities;
 using sport_calendar.il.Repositories.Workout;
-using sport_calendar.il.Repositories.WorkoutMetric;
 
 namespace sport_calendar.api.Endpoints;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CalendarController : ControllerBase
+public class WorkoutController
 {
     private readonly IWorkoutRepository _workoutRepo;
-    private readonly IWorkoutMetricRepository _metricRepo;
 
-    public CalendarController(IWorkoutRepository workoutRepo, IWorkoutMetricRepository metricRepo)
+    public WorkoutController(IWorkoutRepository workoutRepo)
     {
         _workoutRepo = workoutRepo;
-        _metricRepo = metricRepo;
     }
-    
-    [HttpGet("")]
-    public async Task<IActionResult> GetDayDetails([FromQuery] DateOnly date)
+    [HttpPost]
+    public async Task CreateWorkout([FromBody] Workout newWorkout, CancellationToken ct)
     {
-        var data = await _workoutRepo.GetFullWorkoutsByDateAsync(date);
-        return Ok(data);
+        _workoutRepo.AddItem(newWorkout);
+        await _workoutRepo.SaveChangesAsync(ct);
     }
-    
-    [HttpPost("metric")]
-    public async Task<IActionResult> AddProgress([FromBody] WorkoutMetric metric)
+    [HttpDelete]
+    public async Task DeleteWorkout([FromQuery] Workout deleteWorkout, CancellationToken ct)
     {
-        _metricRepo.AddItem(metric);
-        await _metricRepo.SaveChangesAsync();
-        return Ok();
+        _workoutRepo.DeleteItem(deleteWorkout);
+        await _workoutRepo.SaveChangesAsync(ct);
     }
 }

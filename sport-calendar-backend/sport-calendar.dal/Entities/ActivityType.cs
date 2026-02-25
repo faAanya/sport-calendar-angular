@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace sport_calendar.dal.Entities;
+﻿namespace sport_calendar.dal.Entities;
 
 public partial class ActivityType
 {
