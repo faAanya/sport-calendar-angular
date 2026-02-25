@@ -119,22 +119,6 @@ public partial class ExerciseDbContext : DbContext
             new Unit { Id = 4, UnitCode = "reps" }
         );
         
-        var today = new DateOnly(2026, 02, 24);
-        var tomorrow = today.AddDays(1);
-
-        modelBuilder.Entity<Workout>().HasData(
-            new Workout { Id = 1, WorkoutDate = today, ActivityId = 1, StatusId = 2 }, 
-            new Workout { Id = 2, WorkoutDate = today, ActivityId = 2, StatusId = 1 }, 
-            new Workout { Id = 3, WorkoutDate = tomorrow, ActivityId = 3, StatusId = 1 }
-        );
-        
-        modelBuilder.Entity<WorkoutGoal>().HasData(
-            new WorkoutGoal { Id = 1, WorkoutId = 1, UnitId = 1, TargetValue = 10000m, CurrentValue = 7500m}, 
-            new WorkoutGoal { Id = 2, WorkoutId = 1, UnitId = 2, TargetValue = 7.5m,  CurrentValue = 7.2m },   
-            new WorkoutGoal { Id = 3, WorkoutId = 2, UnitId = 2, TargetValue = 5.0m, CurrentValue = 0m},
-            new WorkoutGoal { Id = 4, WorkoutId = 3, UnitId = 3, TargetValue = 45m,  CurrentValue = 12m }     
-        );
-        
         modelBuilder.Entity<ActivityType>().HasData(
             new ActivityType { Id = 1, Name = "Walking" },
             new ActivityType { Id = 2, Name = "Running" },
