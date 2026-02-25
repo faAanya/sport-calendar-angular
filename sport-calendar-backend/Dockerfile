@@ -4,7 +4,6 @@ WORKDIR /src
 COPY ["sport-calendar.api/sport-calendar.api.csproj", "sport-calendar.api/"]
 COPY ["sport-calendar.dal/sport-calendar.dal.csproj", "sport-calendar.dal/"]
 COPY ["sport-calendar.il/sport-calendar.il.csproj", "sport-calendar.il/"]
-COPY ["sport-calendar.al/sport-calendar.al.csproj", "sport-calendar.al/"]
 
 RUN dotnet restore "sport-calendar.api/sport-calendar.api.csproj"
 

@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sport-calendar.dal", "sport
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sport-calendar.il", "sport-calendar-backend\sport-calendar.il\sport-calendar.il.csproj", "{27CD4AE7-F5DF-42CB-A255-41800606CBAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sport-calendar.al", "sport-calendar-backend\sport-calendar.al\sport-calendar.al.csproj", "{EA31C3DC-39EC-45CC-8234-29B03B0C4754}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,18 +57,6 @@ Global
 		{27CD4AE7-F5DF-42CB-A255-41800606CBAC}.Release|x64.Build.0 = Release|Any CPU
 		{27CD4AE7-F5DF-42CB-A255-41800606CBAC}.Release|x86.ActiveCfg = Release|Any CPU
 		{27CD4AE7-F5DF-42CB-A255-41800606CBAC}.Release|x86.Build.0 = Release|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Debug|x64.Build.0 = Debug|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Debug|x86.Build.0 = Debug|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Release|x64.ActiveCfg = Release|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Release|x64.Build.0 = Release|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Release|x86.ActiveCfg = Release|Any CPU
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +65,5 @@ Global
 		{F6E31BEE-6278-449E-BDB5-53DA41FFC710} = {ED12EBA3-72DC-2395-5035-7959353E8917}
 		{EC310A94-2976-498B-84DD-1B291F149AA8} = {ED12EBA3-72DC-2395-5035-7959353E8917}
 		{27CD4AE7-F5DF-42CB-A255-41800606CBAC} = {ED12EBA3-72DC-2395-5035-7959353E8917}
-		{EA31C3DC-39EC-45CC-8234-29B03B0C4754} = {ED12EBA3-72DC-2395-5035-7959353E8917}
 	EndGlobalSection
 EndGlobal
